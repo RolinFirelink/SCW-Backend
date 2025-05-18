@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: orange-smart
+  main:
+    allow-circular-references: true
+  datasource:
+      url: jdbc:mysql://192.168.2.100:3306/orange?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+  data:
+    redis:
+      timeout: 3000
+      connectTimeout: 1000
+      jedis:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 10
+          max-wait: 10000
+      lettuce:
+        pool:
+          max-active: 20
+          min-idle: 10
+          max-idle: 10
+          max-wait: 10000
+        shutdown-timeout: 100
+      host: 192.168.2.100
+      password: 123456
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 30MB
+      location: D:/orange/temp
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml
+
+security:
+  permission:
+    enable: true
+  init:
+    root: false
+    function: false
+  login:
+    enableLockLogin: false
+    enableMultiLogin: true
+    sessionTime: 86400
+
+oss:
+  accessKeyId: temp
+  accessKeySecret: temp
+  endpoint: temp
+  bucketName: temp

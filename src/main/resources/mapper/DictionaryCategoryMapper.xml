@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rolin.orangesmart.mapper.dictionary.DictionaryCategoryMapper">
+
+    <select id="getById" parameterType="java.lang.Long"
+            resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryCategory">
+        SELECT *
+        FROM base_dictionary_category
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="find"
+            resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryCategory">
+        SELECT *
+        FROM base_dictionary_category
+        where 1=1
+        <if test="searchBo.searchWord !=null and searchBo.searchWord !=''">
+            and (
+            category_name like CONCAT('%',CONCAT(#{searchBo.searchWord},'%'))
+            or category_code like CONCAT('%',CONCAT(#{searchBo.searchWord},'%'))
+            )
+        </if>
+        <if test="searchBo.deepSearchWord !=null and searchBo.deepSearchWord != ''">
+            and id in (
+            select category_id
+            from base_dictionary_tag
+            where id in (
+            select tag_id
+            from base_dictionary_tag_item
+            where item_name like CONCAT(CONCAT('%', #{searchBo.deepSearchWord,jdbcType=VARCHAR}), '%')
+            or item_name2 like CONCAT(CONCAT('%', #{searchBo.deepSearchWord,jdbcType=VARCHAR}), '%')
+            )
+            )
+        </if>
+        <if test="searchBo.startUpdateDate !=null">
+            and update_date >= #{searchBo.startUpdateDate, jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchBo.endUpdateDate !=null">
+            and <![CDATA[update_date <= #{searchBo.endUpdateDate, jdbcType=TIMESTAMP}]]>
+        </if>
+        <if test="searchBo.appName !=null and searchBo.appName != ''">
+            and app_name=#{searchBo.appName, jdbcType=VARCHAR}
+        </if>
+        order by id desc
+    </select>
+
+    <select id="findWithCategoryCodeAndAppName"
+            resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryCategory">
+        SELECT *
+        FROM base_dictionary_category
+        where 1=1
+          and category_code=#{categoryCode,jdbcType=VARCHAR}
+          and app_name=#{appName,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.rolin.orangesmart.model.dictionary.entity.DictionaryCategory">
+        INSERT INTO base_dictionary_category (
+            category_code,
+            category_name,
+            app_name,
+            created_user_id,
+            create_date,
+            updated_user_id,
+            update_date,
+            status
+        ) VALUES (
+                     #{categoryCode,jdbcType=VARCHAR},
+                     #{categoryName,jdbcType=VARCHAR},
+                     #{appName,jdbcType=VARCHAR},
+                     #{createdUserId,jdbcType=INTEGER},
+                     now(),
+                     #{updatedUserId,jdbcType=INTEGER},
+                     now(),
+                     '1'
+                 )
+    </insert>
+
+    <update id="update"
+            parameterType="com.rolin.orangesmart.model.dictionary.entity.DictionaryCategory">
+        UPDATE
+            base_dictionary_category
+        SET
+            category_name = #{categoryName,jdbcType=VARCHAR},
+            updated_user_id = #{updatedUserId,jdbcType=INTEGER},
+            update_date = now()
+        WHERE
+            id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM
+            base_dictionary_category
+        WHERE
+            id = #{id}
+    </delete>
+
+    <select id="exist"
+            parameterType="com.rolin.orangesmart.model.dictionary.entity.DictionaryCategory"
+            resultType="boolean">
+        select count(1)
+        from base_dictionary_category
+        where 1=1
+        <if test="id !=null and id != ''">
+            and id != #{id,jdbcType=INTEGER}
+        </if>
+        and category_code = #{categoryCode,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

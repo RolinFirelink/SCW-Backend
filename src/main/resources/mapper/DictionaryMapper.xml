@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rolin.orangesmart.mapper.dictionary.DictionaryMapper">
+
+    <select id="findByAppNameAndLanuageType"
+            resultType="com.rolin.orangesmart.model.dictionary.vo.DictionaryVo">
+        SELECT
+        c.category_code,
+        i.tag_code,
+        n.item_name,
+        n.item_name2
+        FROM base_dictionary_category c
+        left join base_dictionary_tag_item n on c.id=n.category_id
+        and n.language_type=#{languageType, jdbcType=VARCHAR}
+        left join base_dictionary_tag i on i.id=n.tag_id
+        where 1=1
+        <if test="appName !=null and appName != ''">
+            and c.app_name=#{appName,jdbcType=VARCHAR}
+        </if>
+        order by c.id, i.seq_no
+    </select>
+
+</mapper>

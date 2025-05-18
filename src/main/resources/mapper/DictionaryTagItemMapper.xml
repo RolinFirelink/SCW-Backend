@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rolin.orangesmart.mapper.dictionary.DictionaryTagItemMapper">
+    <select id="findByTagIds" resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTagItem">
+        select *
+        from base_dictionary_tag_item
+        where tag_id in
+        <foreach collection="tagIds" item="tagId" open="(" separator="," close=")" index="index">
+            #{tagId,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="findById" resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTagItem">
+        select *
+        from base_dictionary_tag_item
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="findByTagIdAndLanguageType"
+            resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTagItem">
+        select *
+        from base_dictionary_tag_item
+        where tag_id=#{tagId,jdbcType=INTEGER}
+          and language_type=#{languageType,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into base_dictionary_tag_item(
+            category_id,
+            tag_id,
+            language_type,
+            item_name,
+            item_name2,
+            created_user_id,
+            create_date,
+            status
+        ) values(
+                    #{categoryId,jdbcType=INTEGER},
+                    #{tagId,jdbcType=INTEGER},
+                    #{languageType,jdbcType=VARCHAR},
+                    #{itemName,jdbcType=VARCHAR},
+                    #{itemName2,jdbcType=VARCHAR},
+                    #{createdUserId,jdbcType=INTEGER},
+                    now(),
+                    '1'
+                )
+    </insert>
+
+    <update id="update">
+        UPDATE
+            base_dictionary_tag_item
+        SET
+            item_name = #{itemName,jdbcType=VARCHAR},
+            item_name2 = #{itemName2,jdbcType=VARCHAR},
+            updated_user_id = #{updatedUserId,jdbcType=INTEGER},
+            update_date = now()
+        WHERE
+            id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM
+            base_dictionary_tag_item
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByCategoryId" parameterType="java.lang.Long">
+        DELETE FROM
+            base_dictionary_tag_item
+        WHERE category_id = #{categoryId,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByTagId" parameterType="java.lang.Long">
+        DELETE FROM
+            base_dictionary_tag_item
+        WHERE tag_id = #{tagId,jdbcType=INTEGER}
+    </delete>
+
+    <select id="exist" resultType="boolean">
+        SELECT
+        count(1)
+        FROM
+        base_dictionary_tag_item
+        WHERE
+        tag_id=#{tagId,jdbcType=INTEGER}
+        <if test="id !=null and id != ''">
+            and id != #{id,jdbcType=INTEGER}
+        </if>
+        and language_type = #{languageType,jdbcType=VARCHAR}
+    </select>
+</mapper>

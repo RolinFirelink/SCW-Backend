@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rolin.orangesmart.mapper.dictionary.DictionaryTagMapper">
+    <select id="findByCategoryId" resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTag">
+        SELECT
+            *
+        FROM
+            base_dictionary_tag
+        where
+            category_id = #{categoryId}
+          and status=1
+        order by seq_no asc, id
+    </select>
+    <select id="find" resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTag">
+        SELECT
+        *
+        FROM
+        base_dictionary_tag
+        where
+        1=1
+        <if test="searchBo.searchWord !=null and searchBo.searchWord != ''">
+            and id in (
+            select tag_id
+            from base_dictionary_tag_item
+            where item_name like CONCAT(CONCAT('%', #{searchBo.searchWord,jdbcType=VARCHAR}), '%')
+            or item_name2 like CONCAT(CONCAT('%', #{searchBo.searchWord,jdbcType=VARCHAR}), '%')
+            )
+        </if>
+        and category_id = #{searchBo.categoryId}
+        and status=1
+        order by seq_no asc, id
+    </select>
+
+
+    <select id="findById" parameterType="java.lang.Long"
+            resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTag">
+        SELECT
+            *
+        FROM
+            base_dictionary_tag
+        where
+            id = #{id}
+    </select>
+    <select id="findByCategoryIdAndTagCode"
+            resultType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTag">
+        SELECT
+            *
+        FROM
+            base_dictionary_tag
+        where
+            category_id=#{categoryId,jdbcType=INTEGER}
+          and tag_code=#{tagCode,jdbcType=VARCHAR}
+          and status=1
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTag">
+        INSERT INTO base_dictionary_tag (
+            category_id,
+            tag_code,
+            created_user_id,
+            create_date,
+            updated_user_id,
+            update_date,
+            seq_no,
+            status
+        ) VALUES (
+                     #{categoryId,jdbcType=INTEGER},
+                     #{tagCode,jdbcType=VARCHAR},
+                     #{createdUserId,jdbcType=INTEGER},
+                     now(),
+                     #{updatedUserId,jdbcType=INTEGER},
+                     now(),
+                     #{seqNo,jdbcType=INTEGER},
+                     '1'
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTag">
+        UPDATE
+            base_dictionary_tag
+        SET
+            updated_user_id = #{updatedUserId,jdbcType=INTEGER},
+            update_date = now(),
+            seq_no = #{seqNo,jdbcType=INTEGER}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM base_dictionary_tag
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByCategoryId" parameterType="java.lang.Long">
+        DELETE FROM base_dictionary_tag
+        WHERE category_id = #{categoryId,jdbcType=INTEGER}
+    </delete>
+
+    <select id="exist" parameterType="com.rolin.orangesmart.model.dictionary.entity.DictionaryTag"
+            resultType="boolean">
+        select count(1)
+        from base_dictionary_tag
+        where category_id = #{categoryId,jdbcType=INTEGER}
+        and tag_code = #{tagCode,jdbcType=VARCHAR}
+        <if test="id !=null and id != ''">
+            and id != #{id,jdbcType=INTEGER}
+        </if>
+        and status=1
+    </select>
+</mapper>

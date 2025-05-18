@@ -46,6 +46,14 @@ Swagger访问地址: http://localhost:8080/swagger-ui/index.html
 
 注意本项目需要完整使用还需要配合前端项目和智能后端项目，具体请看下面的仓库
 
+[项目后端-智能对话](https://github.com/RolinFirelink/SCW-Backend-Kimi)
+
+[项目后端-智能识别](https://github.com/RolinFirelink/SCW-Backend-Yolov8)
+
+[项目前端-用户端](https://github.com/RolinFirelink/SCW-Front-User)
+
+[项目前端-管理端](https://github.com/RolinFirelink/SCW-Front-Management)
+
 
 
 # 😀介绍

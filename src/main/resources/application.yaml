@@ -4,7 +4,7 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-      url: jdbc:mysql://192.168.2.100:3306/orange?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://192.168.30.100:3306/orange?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
       username: root
       password: 123456
   data:
@@ -24,7 +24,7 @@ spring:
           max-idle: 10
           max-wait: 10000
         shutdown-timeout: 100
-      host: 192.168.2.100
+      host: 192.168.30.100
       password: 123456
   servlet:
     multipart:
